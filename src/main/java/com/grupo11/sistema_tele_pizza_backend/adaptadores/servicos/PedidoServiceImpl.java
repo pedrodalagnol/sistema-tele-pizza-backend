@@ -1,11 +1,7 @@
 package com.grupo11.sistema_tele_pizza_backend.adaptadores.servicos;
 
-import com.grupo11.sistema_tele_pizza_backend.dominio.dados.ClienteRepository;
 import com.grupo11.sistema_tele_pizza_backend.dominio.dados.PedidoRepository;
-import com.grupo11.sistema_tele_pizza_backend.dominio.dados.ProdutosRepository;
-import com.grupo11.sistema_tele_pizza_backend.dominio.entidades.ItemPedido;
 import com.grupo11.sistema_tele_pizza_backend.dominio.entidades.Pedido;
-import com.grupo11.sistema_tele_pizza_backend.dominio.entidades.Produto;
 import com.grupo11.sistema_tele_pizza_backend.dominio.servicos.DescontoService;
 import com.grupo11.sistema_tele_pizza_backend.dominio.servicos.EstoqueService;
 import com.grupo11.sistema_tele_pizza_backend.dominio.servicos.ImpostoService;
@@ -43,23 +39,32 @@ public class PedidoServiceImpl implements PedidoService {
                 .mapToDouble(item -> item.getItem().getPreco() * item.getQuantidade())
                 .sum();
 
-        // In a real application, you would not mutate the object directly.
-        // You would create a new one or use a builder.
-        // new Pedido(...)
+        // Create a temporary Pedido with the value to calculate discount and tax
+        Pedido tempPedido = new Pedido(pedido.getId(), pedido.getCliente(), pedido.getDataHoraPagamento(), pedido.getItens(), pedido.getStatus(), valorTotal, 0, 0, 0);
 
         // 3. Calculate discount
-        BigDecimal desconto = descontoService.calcularDesconto(pedido);
+        BigDecimal desconto = descontoService.calcularDesconto(tempPedido);
 
-        // 4. Calculate tax
-        BigDecimal imposto = impostoService.calcularImposto(pedido);
+        // 4. Calculate tax (based on value before discount)
+        BigDecimal imposto = impostoService.calcularImposto(tempPedido);
 
-        // 5. Calculate final cost
-        BigDecimal valorCobrado = BigDecimal.valueOf(valorTotal).subtract(desconto).add(imposto);
+        // 5. Calculate final cost: (valor - desconto) + imposto
+        BigDecimal valorComDesconto = BigDecimal.valueOf(valorTotal).subtract(desconto);
+        BigDecimal valorCobrado = valorComDesconto.add(imposto);
 
-        // 6. Set status and save
-        pedido.setStatus(Pedido.Status.APROVADO);
-        // Set other calculated values if your Pedido entity has setters or a builder
+        // 6. Create the final approved pedido object
+        Pedido pedidoAprovado = new Pedido(
+            pedido.getId(),
+            pedido.getCliente(),
+            pedido.getDataHoraPagamento(),
+            pedido.getItens(),
+            Pedido.Status.APROVADO,
+            valorTotal,
+            imposto.doubleValue(),
+            desconto.doubleValue(),
+            valorCobrado.doubleValue()
+        );
 
-        return pedidoRepository.save(pedido);
+        return pedidoRepository.save(pedidoAprovado);
     }
 }

@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Component
@@ -36,8 +37,10 @@ public class SubmeterPedidoUC {
 
         List<ItemPedido> itens = pedidoRequest.getItens().stream()
                 .map(itemReq -> {
-                    Produto produto = produtosRepository.procurarPorId(itemReq.getProdutoId())
-                            .orElseThrow(() -> new IllegalArgumentException("Produto não encontrado: " + itemReq.getProdutoId()));
+                    Produto produto = produtosRepository.recuperaProdutoPorid(itemReq.getProdutoId());
+                    if (produto == null) {
+                        throw new IllegalArgumentException("Produto não encontrado: " + itemReq.getProdutoId());
+                    }
                     return new ItemPedido(produto, itemReq.getQuantidade());
                 })
                 .collect(Collectors.toList());
