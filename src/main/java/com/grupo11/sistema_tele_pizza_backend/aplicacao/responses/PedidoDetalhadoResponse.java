@@ -40,5 +40,5 @@ public class PedidoDetalhadoResponse {
     public double getImpostos() { return impostos; }
     public double getDesconto() { return desconto; }
     public double getValorCobrado() { return valorCobrado; }
-    public List<String> getItens() { return itens; }
+    public List<String> getItens() { return itens;}
 }

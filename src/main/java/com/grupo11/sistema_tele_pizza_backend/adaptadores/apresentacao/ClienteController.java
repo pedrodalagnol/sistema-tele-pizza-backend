@@ -22,7 +22,7 @@ public class ClienteController {
         this.autenticarClienteUC = autenticarClienteUC;
     }
 
-    @PostMapping
+    @PostMapping("/cadastro")
     @CrossOrigin("*")
     public ClienteResponse registrarCliente(@RequestBody RegistrarClienteRequest request) {
         return registrarClienteUC.run(request);

@@ -23,7 +23,7 @@ public class DescontoServiceImpl implements DescontoService {
     @Override
     public BigDecimal calcularDesconto(Pedido pedido) {
         LocalDateTime vinteDiasAtras = LocalDateTime.now().minusDays(20);
-        List<Pedido> pedidosRecentes = pedidoRepository.findPedidosByClienteAndData(pedido.getCliente().getId(), vinteDiasAtras);
+        List<Pedido> pedidosRecentes = pedidoRepository.findPedidosByClienteIdAndPaymentDateTime(pedido.getCliente().getId(), vinteDiasAtras);
 
         if (pedidosRecentes.size() > 3) {
             return BigDecimal.valueOf(pedido.getValor()).multiply(BigDecimal.valueOf(0.07));

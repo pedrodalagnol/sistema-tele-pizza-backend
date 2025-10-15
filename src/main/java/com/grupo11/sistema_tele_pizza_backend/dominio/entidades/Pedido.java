@@ -1,8 +1,21 @@
 package com.grupo11.sistema_tele_pizza_backend.dominio.entidades;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Table;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Column;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Entity
+@Table(name = "pedidos")
 public class Pedido {
     public enum Status {
         NOVO,
@@ -15,9 +28,17 @@ public class Pedido {
         ENTREGUE,
         CANCELADO
     }
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "cliente_id")
     private Cliente cliente;
+    @Column
     private LocalDateTime dataHoraPagamento;
+
+    @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ItemPedido> itens;
     private Status status;
     private double valor;
@@ -36,6 +57,10 @@ public class Pedido {
         this.impostos = impostos;
         this.desconto = desconto;
         this.valorCobrado = valorCobrado;
+    }
+
+    public Pedido() {
+
     }
 
     public long getId() {

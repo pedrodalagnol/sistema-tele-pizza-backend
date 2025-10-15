@@ -1,8 +1,20 @@
 package com.grupo11.sistema_tele_pizza_backend.dominio.entidades;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name = "produtos")
 public class Produto {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private String descricao;
+    @ManyToOne
     private Receita receita;
     private int preco;
 
@@ -17,6 +29,10 @@ public class Produto {
         this.descricao = descricao;
         this.receita = receita;
         this.preco = preco;
+    }
+
+    public Produto() {
+
     }
 
     public long getId(){

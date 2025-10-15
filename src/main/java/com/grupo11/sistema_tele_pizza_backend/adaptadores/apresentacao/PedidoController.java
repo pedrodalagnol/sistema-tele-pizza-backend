@@ -1,7 +1,12 @@
 package com.grupo11.sistema_tele_pizza_backend.adaptadores.apresentacao;
 
-import com.grupo11.sistema_tele_pizza_backend.aplicacao.*;
+import com.grupo11.sistema_tele_pizza_backend.aplicacao.CancelarPedidoUC;
+import com.grupo11.sistema_tele_pizza_backend.aplicacao.ConsultarStatusPedidoUC;
+import com.grupo11.sistema_tele_pizza_backend.aplicacao.PagarPedidoUC;
+import com.grupo11.sistema_tele_pizza_backend.aplicacao.SubmeterPedidoUC;
 import com.grupo11.sistema_tele_pizza_backend.aplicacao.requests.PedidoRequest;
+import com.grupo11.sistema_tele_pizza_backend.aplicacao.responses.ListarPedidosEntreguesUC;
+import com.grupo11.sistema_tele_pizza_backend.aplicacao.responses.ListarPedidosPorClienteUC;
 import com.grupo11.sistema_tele_pizza_backend.aplicacao.responses.PedidoDetalhadoResponse;
 import com.grupo11.sistema_tele_pizza_backend.aplicacao.responses.PedidoResponse;
 import com.grupo11.sistema_tele_pizza_backend.aplicacao.responses.StatusPedidoResponse;
@@ -71,6 +76,6 @@ public class PedidoController {
             @PathVariable Long clienteId,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime inicio,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fim) {
-        return listarPedidosPorClienteUC.run(clienteId, inicio, fim);
-    }
+            return listarPedidosPorClienteUC.run(clienteId, inicio, fim);
+        }
 }

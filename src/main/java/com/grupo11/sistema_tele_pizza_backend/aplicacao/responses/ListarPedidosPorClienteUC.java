@@ -1,7 +1,8 @@
-package com.grupo11.sistema_tele_pizza_backend.aplicacao;
+package com.grupo11.sistema_tele_pizza_backend.aplicacao.responses;
 
 import com.grupo11.sistema_tele_pizza_backend.aplicacao.responses.PedidoDetalhadoResponse;
 import com.grupo11.sistema_tele_pizza_backend.dominio.dados.PedidoRepository;
+import com.grupo11.sistema_tele_pizza_backend.dominio.entidades.Pedido;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -20,8 +21,8 @@ public class ListarPedidosPorClienteUC {
     }
 
     public List<PedidoDetalhadoResponse> run(Long clienteId, LocalDateTime inicio, LocalDateTime fim) {
-        return pedidoRepository.findPedidosEntreguesByClienteAndData(clienteId, inicio, fim).stream()
+        return pedidoRepository.findPedidosByCliente_IdAndStatusAndDataHoraPagamentoBetween(clienteId, Pedido.Status.ENTREGUE, inicio, fim).stream()
                 .map(PedidoDetalhadoResponse::new)
                 .collect(Collectors.toList());
-    }
+    }
 }
