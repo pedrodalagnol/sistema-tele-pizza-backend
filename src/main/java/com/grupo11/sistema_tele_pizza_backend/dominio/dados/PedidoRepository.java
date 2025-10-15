@@ -10,4 +10,6 @@ public interface PedidoRepository {
     List<Pedido> findPedidosByClienteAndData(Long clienteId, LocalDateTime data);
     Optional<Pedido> findById(Long id);
     Pedido save(Pedido pedido);
+    List<Pedido> findPedidosEntreguesByData(LocalDateTime inicio, LocalDateTime fim);
+    List<Pedido> findPedidosEntreguesByClienteAndData(Long clienteId, LocalDateTime inicio, LocalDateTime fim);
 }
