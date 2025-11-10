@@ -8,6 +8,7 @@ import com.grupo11.sistema_tele_pizza_backend.dominio.entidades.Cliente;
 import com.grupo11.sistema_tele_pizza_backend.dominio.entidades.ItemPedido;
 import com.grupo11.sistema_tele_pizza_backend.dominio.entidades.Pedido;
 import com.grupo11.sistema_tele_pizza_backend.dominio.entidades.Produto;
+import com.grupo11.sistema_tele_pizza_backend.dominio.servicos.EstoqueService;
 import com.grupo11.sistema_tele_pizza_backend.dominio.servicos.PedidoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -23,12 +24,14 @@ public class SubmeterPedidoUC {
     private final PedidoService pedidoService;
     private final ClienteRepository clienteRepository;
     private final ProdutosRepository produtosRepository;
+    private final EstoqueService estoqueService;
 
     @Autowired
-    public SubmeterPedidoUC(PedidoService pedidoService, ClienteRepository clienteRepository, ProdutosRepository produtosRepository) {
+    public SubmeterPedidoUC(PedidoService pedidoService, ClienteRepository clienteRepository, ProdutosRepository produtosRepository, EstoqueService estoqueService) {
         this.pedidoService = pedidoService;
         this.clienteRepository = clienteRepository;
         this.produtosRepository = produtosRepository;
+        this.estoqueService = estoqueService;
     }
 
     public PedidoResponse run(PedidoRequest pedidoRequest) {
@@ -44,6 +47,10 @@ public class SubmeterPedidoUC {
                     return new ItemPedido(produto, itemReq.getQuantidade());
                 })
                 .collect(Collectors.toList());
+
+        if (!estoqueService.verificaDisponibilidade(itens)) {
+            throw new IllegalStateException("Itens do pedido indisponíveis no estoque.");
+        }
 
         Pedido novoPedido = new Pedido(0, cliente, LocalDateTime.now(), itens, Pedido.Status.NOVO, 0, 0, 0, 0);
 
