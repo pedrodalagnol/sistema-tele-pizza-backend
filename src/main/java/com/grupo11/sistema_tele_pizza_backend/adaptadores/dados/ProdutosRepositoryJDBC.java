@@ -8,14 +8,13 @@ import org.springframework.stereotype.Component;
 
 import com.grupo11.sistema_tele_pizza_backend.dominio.dados.ProdutosRepository;
 import com.grupo11.sistema_tele_pizza_backend.dominio.dados.ReceitasRepository;
-import com.grupo11.sistema_tele_pizza_backend.dominio.entidades.Ingrediente;
 import com.grupo11.sistema_tele_pizza_backend.dominio.entidades.Produto;
 import com.grupo11.sistema_tele_pizza_backend.dominio.entidades.Receita;
 
 @Component
 public class ProdutosRepositoryJDBC implements ProdutosRepository {
-    private JdbcTemplate jdbcTemplate;
-    private ReceitasRepository receitasRepository;
+    private final JdbcTemplate jdbcTemplate;
+    private final ReceitasRepository receitasRepository;
 
     @Autowired
     public ProdutosRepositoryJDBC(JdbcTemplate jdbcTemplate,ReceitasRepository receitasRepository){
@@ -30,7 +29,7 @@ public class ProdutosRepositoryJDBC implements ProdutosRepository {
                      "JOIN cardapio_produto cp ON p.id = cp.produto_id " +
                      "JOIN produto_receita pr ON p.id = pr.produto_id " +
                      "WHERE cp.cardapio_id = ?";
-        List<Produto> produtos = this.jdbcTemplate.query(
+        return this.jdbcTemplate.query(
             sql,
             ps -> ps.setLong(1, id),
             (rs, rowNum) -> {
@@ -45,7 +44,6 @@ public class ProdutosRepositoryJDBC implements ProdutosRepository {
                 return produto;
             }
         );
-        return produtos;
     }
 
     @Override

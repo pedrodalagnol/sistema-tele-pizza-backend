@@ -22,7 +22,7 @@ public class Produto {
     public Produto(long id,String descricao, Receita receita, int preco) {
         if (!Produto.precoValido(preco))
             throw new IllegalArgumentException("Preco invalido: " + preco);
-        if (descricao == null || descricao.length() == 0)
+        if (descricao == null || descricao.isEmpty())
             throw new IllegalArgumentException("Descricao invalida");
         if (receita == null)
             throw new IllegalArgumentException("Receita invalida");

@@ -8,7 +8,6 @@ import com.grupo11.sistema_tele_pizza_backend.aplicacao.requests.PedidoRequest;
 import com.grupo11.sistema_tele_pizza_backend.aplicacao.responses.ListarPedidosEntreguesUC;
 import com.grupo11.sistema_tele_pizza_backend.aplicacao.responses.ListarPedidosPorClienteUC;
 import com.grupo11.sistema_tele_pizza_backend.aplicacao.responses.PedidoDetalhadoResponse;
-import com.grupo11.sistema_tele_pizza_backend.aplicacao.responses.PedidoResponse;
 import com.grupo11.sistema_tele_pizza_backend.aplicacao.responses.StatusPedidoResponse;
 import com.grupo11.sistema_tele_pizza_backend.aplicacao.responses.SubmeterPedidoResponse;
 import org.springframework.beans.factory.annotation.Autowired;
