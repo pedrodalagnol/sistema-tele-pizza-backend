@@ -46,9 +46,9 @@ INSERT INTO receita_ingrediente (receita_id, ingrediente_id) VALUES (3, 3); -- P
 INSERT INTO receita_ingrediente (receita_id, ingrediente_id) VALUES (3, 8); -- Porcao de cebola
 
 -- insercao dos produtos
-INSERT INTO produtos (id,descricao,preco) VALUES (1,'Pizza calabresa',5500);
-INSERT INTO produtos (id,descricao,preco) VALUES (2,'Pizza queijo e presunto',6000);
-INSERT INTO produtos (id,descricao,preco) VALUES (3,'Pizza margherita',4000);
+INSERT INTO produtos (id,descricao,preco,disponivel) VALUES (1,'Pizza calabresa',5500,true);
+INSERT INTO produtos (id,descricao,preco,disponivel) VALUES (2,'Pizza queijo e presunto',6000,true);
+INSERT INTO produtos (id,descricao,preco,disponivel) VALUES (3,'Pizza margherita',4000,true);
 
 -- Associação dos produtos com as receitas
 INSERT INTO produto_receita (produto_id,receita_id) VALUES(1,1);

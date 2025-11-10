@@ -2,7 +2,6 @@ package com.grupo11.sistema_tele_pizza_backend.adaptadores.servicos;
 
 import com.grupo11.sistema_tele_pizza_backend.dominio.dados.PedidoRepository;
 import com.grupo11.sistema_tele_pizza_backend.dominio.entidades.Pedido;
-import com.grupo11.sistema_tele_pizza_backend.dominio.servicos.CozinhaService;
 import com.grupo11.sistema_tele_pizza_backend.dominio.servicos.DescontoService;
 import com.grupo11.sistema_tele_pizza_backend.dominio.servicos.ImpostoService;
 import com.grupo11.sistema_tele_pizza_backend.dominio.servicos.PedidoService;
@@ -17,18 +16,16 @@ public class PedidoServiceImpl implements PedidoService {
     private final DescontoService descontoService;
     private final ImpostoService impostoService;
     private final PedidoRepository pedidoRepository;
-    private final CozinhaService cozinhaService;
 
     @Autowired
-    public PedidoServiceImpl(DescontoService descontoService, ImpostoService impostoService, PedidoRepository pedidoRepository, CozinhaService cozinhaService) {
+    public PedidoServiceImpl(DescontoService descontoService, ImpostoService impostoService, PedidoRepository pedidoRepository) {
         this.descontoService = descontoService;
         this.impostoService = impostoService;
         this.pedidoRepository = pedidoRepository;
-        this.cozinhaService = cozinhaService;
     }
 
     @Override
-    public Pedido aprovarPedido(Pedido pedido) {
+    public Pedido submeterPedido(Pedido pedido) {
         // 1. Calculate total value
         double valorTotal = pedido.getItens().stream()
                 .mapToDouble(item -> item.getItem().getPreco() * item.getQuantidade())
@@ -53,17 +50,13 @@ public class PedidoServiceImpl implements PedidoService {
             pedido.getCliente(),
             pedido.getDataHoraPagamento(),
             pedido.getItens(),
-            Pedido.Status.AGUARDANDO,
+            Pedido.Status.APROVADO,
             valorTotal,
             imposto.doubleValue(),
             desconto.doubleValue(),
             valorCobrado.doubleValue()
         );
 
-        Pedido pedidoSalvo = pedidoRepository.save(pedidoAprovado);
-
-        cozinhaService.chegadaDePedido(pedidoSalvo);
-
-        return pedidoSalvo;
+        return pedidoRepository.save(pedidoAprovado);
     }
 }

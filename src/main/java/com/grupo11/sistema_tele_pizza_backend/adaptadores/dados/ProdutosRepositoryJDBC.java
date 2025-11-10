@@ -25,7 +25,7 @@ public class ProdutosRepositoryJDBC implements ProdutosRepository {
 
     @Override
     public List<Produto> recuperaProdutosCardapio(long id) {
-        String sql = "SELECT p.id, p.descricao, p.preco, pr.receita_id " +
+        String sql = "SELECT p.id, p.descricao, p.preco, p.disponivel, pr.receita_id " +
                      "FROM produtos p " +
                      "JOIN cardapio_produto cp ON p.id = cp.produto_id " +
                      "JOIN produto_receita pr ON p.id = pr.produto_id " +
@@ -37,9 +37,12 @@ public class ProdutosRepositoryJDBC implements ProdutosRepository {
                 long produtoId = rs.getLong("id");
                 String descricao = rs.getString("descricao");
                 int preco = rs.getInt("preco");
+                boolean disponivel = rs.getBoolean("disponivel");
                 long receitaId = rs.getLong("receita_id");
                 Receita receita = receitasRepository.recuperaReceita(receitaId);
-                return new Produto(produtoId, descricao, receita, preco);
+                Produto produto = new Produto(produtoId, descricao, receita, preco);
+                produto.setDisponivel(disponivel);
+                return produto;
             }
         );
         return produtos;
@@ -47,7 +50,7 @@ public class ProdutosRepositoryJDBC implements ProdutosRepository {
 
     @Override
     public Produto recuperaProdutoPorid(long id) {
-        String sql = "SELECT p.id, p.descricao, p.preco, pr.receita_id " +
+        String sql = "SELECT p.id, p.descricao, p.preco, p.disponivel, pr.receita_id " +
                      "FROM produtos p " +
                      "JOIN produto_receita pr ON p.id = pr.produto_id " +
                      "WHERE p.id = ?";
@@ -58,12 +61,20 @@ public class ProdutosRepositoryJDBC implements ProdutosRepository {
                 long produtoId = rs.getLong("id");
                 String descricao = rs.getString("descricao");
                 int preco = rs.getInt("preco");
+                boolean disponivel = rs.getBoolean("disponivel");
                 long receitaId = rs.getLong("receita_id");
                 Receita receita = receitasRepository.recuperaReceita(receitaId);
-                return new Produto(produtoId, descricao, receita, preco);
+                Produto produto = new Produto(produtoId, descricao, receita, preco);
+                produto.setDisponivel(disponivel);
+                return produto;
             }
         );
-        return produtos.isEmpty() ? null : produtos.getFirst();        
+        return produtos.isEmpty() ? null : produtos.getFirst();
     }
-    
+
+    @Override
+    public void marcarComoIndisponivel(long id) {
+        String sql = "UPDATE produtos SET disponivel = false WHERE id = ?";
+        jdbcTemplate.update(sql, id);
+    }
 }

@@ -10,8 +10,10 @@ import com.grupo11.sistema_tele_pizza_backend.aplicacao.responses.ListarPedidosP
 import com.grupo11.sistema_tele_pizza_backend.aplicacao.responses.PedidoDetalhadoResponse;
 import com.grupo11.sistema_tele_pizza_backend.aplicacao.responses.PedidoResponse;
 import com.grupo11.sistema_tele_pizza_backend.aplicacao.responses.StatusPedidoResponse;
+import com.grupo11.sistema_tele_pizza_backend.aplicacao.responses.SubmeterPedidoResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -40,8 +42,12 @@ public class PedidoController {
 
     @PostMapping
     @CrossOrigin("*")
-    public PedidoResponse submeterPedido(@RequestBody PedidoRequest pedidoRequest) {
-        return submeterPedidoUC.run(pedidoRequest);
+    public ResponseEntity<SubmeterPedidoResponse> submeterPedido(@RequestBody PedidoRequest pedidoRequest) {
+        SubmeterPedidoResponse response = submeterPedidoUC.run(pedidoRequest);
+        if (response.getItensIndisponiveis() != null) {
+            return ResponseEntity.badRequest().body(response);
+        }
+        return ResponseEntity.status(201).body(response);
     }
 
     @GetMapping("/{id}/status")

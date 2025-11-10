@@ -17,6 +17,7 @@ public class Produto {
     @ManyToOne
     private Receita receita;
     private int preco;
+    private boolean disponivel;
 
     public Produto(long id,String descricao, Receita receita, int preco) {
         if (!Produto.precoValido(preco))
@@ -29,6 +30,7 @@ public class Produto {
         this.descricao = descricao;
         this.receita = receita;
         this.preco = preco;
+        this.disponivel = true;
     }
 
     public Produto() {
@@ -49,6 +51,14 @@ public class Produto {
 
     public int getPreco() {
         return preco;
+    }
+
+    public boolean isDisponivel() {
+        return disponivel;
+    }
+
+    public void setDisponivel(boolean disponivel) {
+        this.disponivel = disponivel;
     }
 
     public void setPreco(int preco) {

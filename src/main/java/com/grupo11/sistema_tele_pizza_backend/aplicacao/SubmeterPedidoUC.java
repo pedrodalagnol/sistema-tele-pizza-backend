@@ -2,6 +2,7 @@ package com.grupo11.sistema_tele_pizza_backend.aplicacao;
 
 import com.grupo11.sistema_tele_pizza_backend.aplicacao.requests.PedidoRequest;
 import com.grupo11.sistema_tele_pizza_backend.aplicacao.responses.PedidoResponse;
+import com.grupo11.sistema_tele_pizza_backend.aplicacao.responses.SubmeterPedidoResponse;
 import com.grupo11.sistema_tele_pizza_backend.dominio.dados.ClienteRepository;
 import com.grupo11.sistema_tele_pizza_backend.dominio.dados.ProdutosRepository;
 import com.grupo11.sistema_tele_pizza_backend.dominio.entidades.Cliente;
@@ -34,7 +35,7 @@ public class SubmeterPedidoUC {
         this.estoqueService = estoqueService;
     }
 
-    public PedidoResponse run(PedidoRequest pedidoRequest) {
+    public SubmeterPedidoResponse run(PedidoRequest pedidoRequest) {
         Cliente cliente = clienteRepository.findById(pedidoRequest.getClienteId())
                 .orElseThrow(() -> new IllegalArgumentException("Cliente não encontrado."));
 
@@ -48,14 +49,16 @@ public class SubmeterPedidoUC {
                 })
                 .collect(Collectors.toList());
 
-        if (!estoqueService.verificaDisponibilidade(itens)) {
-            throw new IllegalStateException("Itens do pedido indisponíveis no estoque.");
+        List<ItemPedido> itensIndisponiveis = estoqueService.verificaDisponibilidade(itens);
+        if (!itensIndisponiveis.isEmpty()) {
+            itensIndisponiveis.forEach(item -> produtosRepository.marcarComoIndisponivel(item.getItem().getId()));
+            return new SubmeterPedidoResponse(itensIndisponiveis, "Itens do pedido indisponíveis no estoque.");
         }
 
         Pedido novoPedido = new Pedido(0, cliente, LocalDateTime.now(), itens, Pedido.Status.NOVO, 0, 0, 0, 0);
 
-        Pedido pedidoAprovado = pedidoService.aprovarPedido(novoPedido);
+        Pedido pedidoAprovado = pedidoService.submeterPedido(novoPedido);
 
-        return new PedidoResponse(pedidoAprovado.getId(), pedidoAprovado.getStatus().name(), null);
+        return new SubmeterPedidoResponse(new PedidoResponse(pedidoAprovado.getId(), pedidoAprovado.getStatus().name(), null));
     }
 }
