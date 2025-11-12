@@ -28,7 +28,7 @@ public class ProdutosRepositoryJDBC implements ProdutosRepository {
                      "FROM produtos p " +
                      "JOIN cardapio_produto cp ON p.id = cp.produto_id " +
                      "JOIN produto_receita pr ON p.id = pr.produto_id " +
-                     "WHERE cp.cardapio_id = ?";
+                     "WHERE cp.cardapio_id = ? AND p.disponivel = true";
         return this.jdbcTemplate.query(
             sql,
             ps -> ps.setLong(1, id),
@@ -67,7 +67,10 @@ public class ProdutosRepositoryJDBC implements ProdutosRepository {
                 return produto;
             }
         );
-        return produtos.isEmpty() ? null : produtos.getFirst();
+        if (produtos.isEmpty()) {
+            return null;
+        }
+        return produtos.get(0);
     }
 
     @Override

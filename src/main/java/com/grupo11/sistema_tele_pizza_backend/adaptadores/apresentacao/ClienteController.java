@@ -1,36 +1,27 @@
 package com.grupo11.sistema_tele_pizza_backend.adaptadores.apresentacao;
 
-import com.grupo11.sistema_tele_pizza_backend.aplicacao.AutenticarClienteUC;
-import com.grupo11.sistema_tele_pizza_backend.aplicacao.RegistrarClienteUC;
-import com.grupo11.sistema_tele_pizza_backend.aplicacao.requests.AutenticarClienteRequest;
-import com.grupo11.sistema_tele_pizza_backend.aplicacao.requests.RegistrarClienteRequest;
-import com.grupo11.sistema_tele_pizza_backend.aplicacao.responses.AutenticarClienteResponse;
-import com.grupo11.sistema_tele_pizza_backend.aplicacao.responses.ClienteResponse;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import com.grupo11.sistema_tele_pizza_backend.dominio.dados.ClienteRepository;
+import com.grupo11.sistema_tele_pizza_backend.dominio.entidades.Cliente;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/clientes")
+@RequestMapping("/pizzeria/clientes")
 public class ClienteController {
 
-    private final RegistrarClienteUC registrarClienteUC;
-    private final AutenticarClienteUC autenticarClienteUC;
+    private final ClienteRepository clienteRepository;
 
-    @Autowired
-    public ClienteController(RegistrarClienteUC registrarClienteUC, AutenticarClienteUC autenticarClienteUC) {
-        this.registrarClienteUC = registrarClienteUC;
-        this.autenticarClienteUC = autenticarClienteUC;
+    public ClienteController(ClienteRepository clienteRepository) {
+        this.clienteRepository = clienteRepository;
     }
 
-    @PostMapping("/cadastro")
-    @CrossOrigin("*")
-    public ClienteResponse registrarCliente(@RequestBody RegistrarClienteRequest request) {
-        return registrarClienteUC.run(request);
-    }
-
-    @PostMapping("/login")
-    @CrossOrigin("*")
-    public AutenticarClienteResponse autenticarCliente(@RequestBody AutenticarClienteRequest request) {
-        return autenticarClienteUC.run(request);
+    @GetMapping("/valida/{username}")
+    public ResponseEntity<Cliente> validaCliente(@PathVariable String username) {
+        return clienteRepository.findByUsername(username)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 }

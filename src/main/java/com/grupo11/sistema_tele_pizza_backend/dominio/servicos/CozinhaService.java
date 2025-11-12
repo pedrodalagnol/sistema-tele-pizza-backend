@@ -1,5 +1,6 @@
 package com.grupo11.sistema_tele_pizza_backend.dominio.servicos;
 
+import com.grupo11.sistema_tele_pizza_backend.adaptadores.notificacao.PedidoPublisher;
 import com.grupo11.sistema_tele_pizza_backend.dominio.dados.PedidoRepository;
 import com.grupo11.sistema_tele_pizza_backend.dominio.entidades.Pedido;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,15 +15,15 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class CozinhaService {
     private final PedidoRepository pedidoRepository;
-    private final EntregaService entregaService;
+    private final PedidoPublisher pedidoPublisher;
     private final Queue<Pedido> filaEntrada;
     private Pedido emPreparacao;
     private final ScheduledExecutorService scheduler;
 
     @Autowired
-    public CozinhaService(PedidoRepository pedidoRepository, EntregaService entregaService) {
+    public CozinhaService(PedidoRepository pedidoRepository, PedidoPublisher pedidoPublisher) {
         this.pedidoRepository = pedidoRepository;
-        this.entregaService = entregaService;
+        this.pedidoPublisher = pedidoPublisher;
         this.filaEntrada = new LinkedBlockingQueue<>();
         this.emPreparacao = null;
         this.scheduler = Executors.newSingleThreadScheduledExecutor();
@@ -52,7 +53,7 @@ public class CozinhaService {
         System.out.println("Pedido pronto: " + emPreparacao.getId());
         
         // Envia para entrega
-        entregaService.enviarParaEntrega(emPreparacao);
+        pedidoPublisher.enviarParaEntrega(emPreparacao);
 
         emPreparacao = null;
         if (!filaEntrada.isEmpty()) {

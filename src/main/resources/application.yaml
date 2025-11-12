@@ -1,4 +1,6 @@
 spring:
+  application:
+    name: pizzeria-service
   datasource:
     url: jdbc:h2:mem:pizzadb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
     driver-class-name: org.h2.Driver
@@ -13,6 +15,11 @@ spring:
     console:
       enabled: true
       path: /h2
+  rabbitmq:
+    host: rabbitmq
+    port: 5672
+    username: guest
+    password: guest
 logging:
   level:
     org:
@@ -20,7 +27,15 @@ logging:
         jdbc: DEBUG
     com:
       grupo11: DEBUG
-application:
-  name: sistema-tele-pizza-backend
 server:
-  port: 8080
+  port: 0
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://name-server:8761/eureka/
+
+app:
+  rabbitmq:
+    queue:
+      name: delivery-requests

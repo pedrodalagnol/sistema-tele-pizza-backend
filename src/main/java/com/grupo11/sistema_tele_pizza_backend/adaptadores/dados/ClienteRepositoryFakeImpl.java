@@ -34,6 +34,11 @@ public class ClienteRepositoryFakeImpl implements ClienteRepository {
     }
 
     @Override
+    public Optional<Cliente> findByUsername(String username) {
+        return findByEmail(username);
+    }
+
+    @Override
     public Cliente save(Cliente cliente) {
         if (cliente.getId() == null || cliente.getId() == 0) {
             long newId = nextId.getAndIncrement();

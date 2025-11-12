@@ -20,7 +20,7 @@ public class RecuperarCardapioUC {
     }
 
     public CardapioResponse run(long idCardapio){
-        Cardapio cardapio = cardapioService.recuperaCardapio(1L);
+        Cardapio cardapio = cardapioService.recuperaCardapio(idCardapio);
         List<Produto> sugestoes = cardapioService.recuperaSugestoesDoChef();
         return new CardapioResponse(cardapio,sugestoes);
     }

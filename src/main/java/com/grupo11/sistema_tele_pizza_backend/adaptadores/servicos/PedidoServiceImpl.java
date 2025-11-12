@@ -2,7 +2,6 @@ package com.grupo11.sistema_tele_pizza_backend.adaptadores.servicos;
 
 import com.grupo11.sistema_tele_pizza_backend.dominio.dados.PedidoRepository;
 import com.grupo11.sistema_tele_pizza_backend.dominio.entidades.Pedido;
-import com.grupo11.sistema_tele_pizza_backend.dominio.servicos.DescontoService;
 import com.grupo11.sistema_tele_pizza_backend.dominio.servicos.ImpostoService;
 import com.grupo11.sistema_tele_pizza_backend.dominio.servicos.PedidoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,13 +12,11 @@ import java.math.BigDecimal;
 @Service
 public class PedidoServiceImpl implements PedidoService {
 
-    private final DescontoService descontoService;
     private final ImpostoService impostoService;
     private final PedidoRepository pedidoRepository;
 
     @Autowired
-    public PedidoServiceImpl(DescontoService descontoService, ImpostoService impostoService, PedidoRepository pedidoRepository) {
-        this.descontoService = descontoService;
+    public PedidoServiceImpl(ImpostoService impostoService, PedidoRepository pedidoRepository) {
         this.impostoService = impostoService;
         this.pedidoRepository = pedidoRepository;
     }
@@ -34,8 +31,8 @@ public class PedidoServiceImpl implements PedidoService {
         // Create a temporary Pedido with the value to calculate discount and tax
         Pedido tempPedido = new Pedido(pedido.getId(), pedido.getCliente(), pedido.getDataHoraPagamento(), pedido.getItens(), pedido.getStatus(), valorTotal, 0, 0, 0);
 
-        // 2. Calculate discount
-        BigDecimal desconto = descontoService.calcularDesconto(tempPedido);
+        // 2. Calculate discount (removed)
+        BigDecimal desconto = BigDecimal.ZERO;
 
         // 3. Calculate tax (based on value before discount)
         BigDecimal imposto = impostoService.calcularImposto(tempPedido);
